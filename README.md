@@ -1,7 +1,7 @@
-# Gap Estimation Utilities
+# Selection Gap Estimation Utilities
 
 This repository contains the core implementation and experimental code for estimating
-our proposed upper bound on generalization gaps under selection bias. Although our method is meant to work in real-world settings with limited target data observability, we provide implementation that supports experiments of simulated selection bias. Because MIMIC and All of Us both are non-public data sources, we provide synthetic data experiments and an example real world case using CDC health data. 
+our proposed upper bound on generalization gaps under selection bias for the paper "A Practical Upper Bound on Selection Bias Effects in Medical Prediction Models". Although our method is meant to work in real-world settings with limited target data observability, we provide implementation that supports experiments of simulated selection bias. Because MIMIC and All of Us both are non-public data sources, we provide synthetic data experiments and an example real world case using CDC health data. 
 
 The **primary entry point for users** is the `Generalization_Bound_Estimator` class, found in `gap_est_utils.py`, which supports running the proposed method as well as selected baseline approaches. 
 
