@@ -145,6 +145,7 @@ def bootstrap_moment_matching(
 
 def _prefilter_candidates_by_cohen(
     P_candidates,
+    P_data,
     Q_mu,
     Q_var,
     Q_N,
@@ -153,15 +154,14 @@ def _prefilter_candidates_by_cohen(
     """
     Reduce candidate variable set by filtering using Cohen's d statistics.
     """
-    P_N = len(P_candidates)
-    P_var = np.var(P_candidates, axis=0, ddof=1)
-    P_mu = np.mean(P_candidates, axis=0)
+    P_N = len(P_data)
+    P_var = np.var(P_data, axis=0, ddof=1)
+    P_mu = np.mean(P_data, axis=0)
     pooled_std = np.sqrt(((P_N - 1) * P_var + (Q_N - 1) * Q_var) / (P_N + Q_N - 2))
 
     cohen_d = np.abs(P_mu - Q_mu) / pooled_std
-    keep = cohen_d > threshold
-    candidate_cols = P_candidates
-    return list(np.asarray(candidate_cols)[keep])
+    keep = (cohen_d > threshold).squeeze()
+    return list(np.asarray(P_candidates)[keep])
  
 
 def run_heuristic_mm_ustar(
@@ -197,7 +197,6 @@ def run_heuristic_mm_ustar(
     nominated_ustar_cols : list[str]
         Candidate columns nominated as U*.
     """
-    print(config)
     assert len(np.intersect1d(Utilde_cols, all_Ustar_candidate_cols)) == 0, "Utilde and candidate sets must be disjoint."
 
     # Filter candidate variables if in high-dimensional setting
@@ -221,7 +220,7 @@ def run_heuristic_mm_ustar(
         bootstrap_iters=config.heuristic_bootstrap,
         mm_type=config.heuristic_type,
         seed=42,
-        n_jobs=14 # parallelize bootstrap iterations across CPU cores; adjust as needed for your environment
+        n_jobs=-1 # parallelize bootstrap iterations across CPU cores; adjust as needed
     )
     
     candidate_thetas = bootstrap_thetas[:,len(Utilde_cols):]
